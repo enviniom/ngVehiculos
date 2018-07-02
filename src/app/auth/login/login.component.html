@@ -1,3 +1,65 @@
-<p>
-  login works!
-</p>
+<nb-auth-block>
+  <h2 class="title">Iniciar sesión</h2>
+  <small class="form-text sub-title">Hola! Inicia sesión con tu email y contraseña</small>
+  <form (ngSubmit)="submitLogin()" [formGroup]="loginForm" autocomplete="nope" novalidate>
+    <div *ngIf="errors && errors.length > 0 && !submited"
+         class="alert alert-danger" role="alert">
+      <div><strong>¡Oh Changos!</strong></div>
+      <div *ngFor="let error of errors">{{ error }}</div>
+    </div>
+    <div *ngIf="messages && messages.length > 0 && !submitted"
+         class="alert alert-success" role="alert">
+      <div><strong>¡Que bien!</strong></div>
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </div>
+    <div class="form-group">
+      <label for="input-email" class="sr-only">Dirección de Email</label>
+      <input type="email" formControlName="email"
+            [class.form-control-danger]="email.touched && email.errors"
+            class="form-control" placeholder="Email" autofocus>
+      <div *ngIf="email.invalid && email.touched">
+        <small class="form-text error" *ngIf="email.errors.required">
+          ¡Se requiere un Email!
+        </small>
+        <small class="form-text error" *ngIf="email.errors.email">
+          ¡Hey!, debe ser un Email real
+        </small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-password" class="sr-only">Contraseña</label>
+      <input type="password" formControlName="pass"
+             class="form-control" placeholder="Contraseña"
+             [class.form-control-danger]="pass.touched && pass.errors">
+      <div *ngIf="pass.invalid && pass.touched">
+        <small class="form-text error" *ngIf="pass.errors.required">
+          ¡La contraseña es requerida!
+        </small>
+        <small
+          class="form-text error" *ngIf="pass.errors.minlength || pass.errors.maxlength">
+          La contraseña debe contener
+          de 6 a 25 caracteres
+        </small>
+      </div>
+    </div>
+    <div class="form-group accept-group col-sm-12">
+      <nb-checkbox name="rememberMe">Recordarme</nb-checkbox>
+      <a class="forgot-password" routerLink="../request-password">¿Olvidaste la contraseña?</a>
+    </div>
+    <button [disabled]="!loginForm.valid" class="btn btn-block btn-hero-success"
+            [class.btn-pulse]="submitted">
+      Ingresar
+    </button>
+  </form>
+  <div class="links">
+    <small class="form-text">O conectate con:</small>
+    <div class="socials">
+      <a href="https://github.com/akveo" target="_blank" class="socicon-github"></a>
+      <a href="https://www.facebook.com/akveo/" target="_blank" class="socicon-facebook"></a>
+      <a href="https://twitter.com/akveo_inc" target="_blank" class="socicon-twitter"></a>
+    </div>
+    <small class="form-text">
+      ¿No tienes cuenta? <a routerLink="#"><strong>Habla con el administrador</strong></a>
+    </small>
+  </div>
+</nb-auth-block>
