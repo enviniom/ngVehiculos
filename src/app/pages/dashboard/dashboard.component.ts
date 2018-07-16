@@ -1,6 +1,9 @@
 import {Component, OnDestroy} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators/takeWhile' ;
+import { AuthService } from '../../services/auth.service';
+import { User } from '../../services/auth.service';
+import { Observable } from 'rxjs';
 
 interface CardSettings {
   title: string;
@@ -14,7 +17,15 @@ interface CardSettings {
 })
 export class DashboardComponent implements OnDestroy {
 
+  private arrayUsers: any;
+  public valor: string;
+  public mostrar: boolean = true;
+
   private alive = true;
+  public userDetails: firebase.User = null;
+  public user:any;
+  public tokenId: string;
+  public tokenIdResult: any;
 
   lightCard: CardSettings = {
     title: 'Light',
@@ -73,12 +84,40 @@ export class DashboardComponent implements OnDestroy {
     ],
   };
 
-  constructor(private themeService: NbThemeService) {
+  constructor(private themeService: NbThemeService, private as: AuthService) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
         this.statusCards = this.statusCardsByThemes[theme.name];
     });
+  }
+
+  testing() {
+    let users:Observable<User[]> = this.as.getUsers()
+    users.subscribe((data) => {
+      console.log('data', data);
+      this.arrayUsers = data;
+    });
+  }
+
+  testing2() {
+    if (this.valor) {
+      console.log('Inicia testing2');
+      this.mostrar = this.buscarArray();
+    }
+  }
+
+  buscarArray() {
+    console.log('Inició búsqueda');
+    let test: boolean = true;
+    this.arrayUsers.forEach(element => {
+      if (element.email.localeCompare(this.valor)===0) {
+        console.log('entró en if');
+        test = false;
+      }
+    });
+    console.log('Terminó ciclo retorna test');
+    return test;
   }
 
   ngOnDestroy() {

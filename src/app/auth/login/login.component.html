@@ -1,7 +1,7 @@
 <nb-auth-block>
   <h2 class="title">Iniciar sesión</h2>
   <small class="form-text sub-title">Hola! Inicia sesión con tu email y contraseña</small>
-  <form (ngSubmit)="submitLogin()" [formGroup]="loginForm" autocomplete="nope" novalidate>
+  <form (ngSubmit)="submitLogin()" [formGroup]="loginForm" novalidate>
     <div *ngIf="errors && errors.length > 0 && !submited"
          class="alert alert-danger" role="alert">
       <div><strong>¡Oh Changos!</strong></div>

@@ -1,0 +1,91 @@
+<toaster-container [toasterconfig]="config"></toaster-container>
+<nb-auth-block>
+  <h2 class="title">Registrar Usuarios</h2>
+  <small class="form-text sub-title">Hola! Este es el módulo para crear usuarios</small>
+  <form (ngSubmit)="submitRegister()" [formGroup]="registerForm" novalidate>
+    <div *ngIf="errors && errors.length > 0 && !submited" class="alert alert-danger" role="alert">
+      <div>
+        <strong>¡Oh Changos!</strong>
+      </div>
+      <div *ngFor="let error of errors">{{ error }}</div>
+    </div>
+    <div *ngIf="messages && messages.length > 0 && !submitted" class="alert alert-success" role="alert">
+      <div>
+        <strong>¡Que bien!</strong>
+      </div>
+      <div *ngFor="let message of messages">{{ message }}</div>
+    </div>
+    <div class="form-group">
+      <label for="input-email" class="sr-only">Dirección de Email</label>
+      <input type="email" formControlName="email" id="input-email" [class.form-control-danger]="email.touched && email.errors"
+        class="form-control" placeholder="Email" autofocus>
+      <div *ngIf="email.touched && email.invalid">
+        <small class="form-text error" *ngIf="email.errors.required">
+          ¡Se requiere un Email!
+        </small>
+        <small class="form-text error" *ngIf="email.errors.email">
+          ¡Hey!, debe ser un Email real
+        </small>
+      </div>
+      <div *ngIf="emailExist">
+        <small class="form-text error">
+          ¡Changos, ya existe este Email!
+        </small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-password" class="sr-only">Contraseña</label>
+      <input type="password" formControlName="pass" id="input-password" class="form-control" placeholder="Contraseña" [class.form-control-danger]="pass.touched && pass.errors">
+      <div *ngIf="pass.invalid && pass.touched">
+        <small class="form-text error" *ngIf="pass.errors.required">
+          ¡La contraseña es requerida!
+        </small>
+        <small class="form-text error" *ngIf="pass.errors.minlength || pass.errors.maxlength">
+          La contraseña debe contener de 6 a 25 caracteres
+        </small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="rol-select">Seleccione un rol</label>
+      <select id="rol-select" class="form-control" formControlName="rol">
+        <option *ngFor="let rol of roles | async" [value]="rol.rol"> {{rol.rol}} </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="input-name" class="sr-only">Nombre</label>
+      <input type="text" formControlName="name" id="input-name" class="form-control" placeholder="Nombre" [class.form-control-danger]="name.touched && name.errors">
+      <div *ngIf="name.invalid && name.touched">
+        <small class="form-text error" *ngIf="name.errors.required">
+          ¡El nombre es requerido!
+        </small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-lastname" class="sr-only">Apellido</label>
+      <input type="text" formControlName="lastname" id="input-lastname" class="form-control" placeholder="Apellido" [class.form-control-danger]="lastname.touched && lastname.errors">
+      <div *ngIf="lastname.invalid && lastname.touched">
+        <small class="form-text error" *ngIf="lastname.errors.required">
+          ¡El Apellido es requerido!
+        </small>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="false">
+      <label for="input-photoUrl" class="sr-only">Foto Url</label>
+      <input type="text" formControlName="photoUrl" id="input-photoUrl" class="form-control" placeholder="Foto Url" [class.form-control-danger]="photoUrl.touched && photoUrl.errors">
+      <div *ngIf="photoUrl.invalid && photoUrl.touched">
+        <small class="form-text error" *ngIf="photoUrl.errors.required">
+          ¡La foto es requerida!
+        </small>
+      </div>
+    </div>
+    <button [disabled]="!registerForm.valid && emailExist" class="btn btn-block btn-hero-success" [class.btn-pulse]="submitted">
+      Ingresar
+    </button>
+  </form>
+  <hr>
+  <h3>Salir del registro</h3>
+  <p>Tenga en cuenta que al salir de este módulo debe iniciar sesión nuevamente</p>
+  <button class="btn btn-block btn-hero-info" (click)="redirectToLogout()">Salir</button>
+
+</nb-auth-block>
+

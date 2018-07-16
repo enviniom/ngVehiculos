@@ -8,8 +8,12 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
-    title: 'FEATURES',
+    title: 'CARACTERISTICAS',
     group: true,
+  },
+  {
+    title: 'usuario',
+    icon: ''
   },
   {
     title: 'Auth',

@@ -1,5 +1,21 @@
 <div class="row">
   <nb-card>
     <nb-card-body>Hello from ngx-admin sandbox project.</nb-card-body>
+    <button class="btn btn-hero-info" (click)="testing()">Click to show</button>
   </nb-card>
 </div>
+
+<div class="row">
+  <nb-card>
+    <nb-card-header>Testing array</nb-card-header>
+    <nb-card-body>
+      <input type="text" (keyup)="testing2()" [(ngModel)]="valor">
+      <button class="btn btn-hero-info" *ngIf="mostrar">Click to test2</button>
+    </nb-card-body>
+
+  </nb-card>
+</div>
+
+
+
+

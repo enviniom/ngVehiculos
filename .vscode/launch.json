@@ -1,6 +1,26 @@
 {
     "version": "0.2.0",
     "configurations": [
+      {
+        "type": "firefox",
+        "request": "launch",
+        "reAttach": true,
+        "name": "Launch localhost",
+        "url": "http://localhost:4200",
+        "webRoot": "${workspaceFolder}"
+      },
+      {
+        "name": "Launch Chrome with ng serve",
+        "type": "chrome",
+        "request": "launch",
+        "runtimeExecutable": "/usr/bin/chromium",
+        "url": "http://localhost:4200",
+        "webRoot": "${workspaceRoot}",
+        "sourceMapPathOverrides": {
+          "webRoot": "${workspaceRoot}",
+          "webpack:/*": "${workspaceRoot}/*"
+        }
+      },
         {
             "type": "chrome",
             "request": "launch",
