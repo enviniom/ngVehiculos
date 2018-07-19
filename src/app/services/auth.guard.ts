@@ -7,24 +7,28 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(private as: AuthService, private router: Router) { }
+  constructor(private authS: AuthService, private router: Router) { }
+
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    let activate: boolean = false;
-    if (this.as.userDetails) {
-      activate = true;
-    }
-    return activate;
+    return this.authS.user$.pipe(
+      take(1),
+      map(authState => !!authState),
+      tap(authenticated => {
+        if (!authenticated) {
+            this.router.navigate(['auth/login']);
+        }})
+    );
   }
 }
 
 @Injectable()
 export class AuthGuardAdmin implements CanActivate {
 
-  constructor(private as: AuthService, private router: Router) { }
+  constructor(private authS: AuthService, private router: Router) { }
   canActivate(): Observable<boolean> | Promise<boolean> | boolean {
     let activate: boolean = false;
-    if (this.as.userDetails) {
-      activate = this.as.userDetails.rol.localeCompare('admin') === 0;
+    if (this.authS.userDetails) {
+      activate = this.authS.userDetails.rol.localeCompare('admin') === 0;
     }
     return activate;
 

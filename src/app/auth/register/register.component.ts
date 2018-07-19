@@ -13,6 +13,7 @@ import 'style-loader!angular2-toaster/toaster.css';
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   email$: Observable<any>;
+  subscriptionUser: Subscription;
   subscriptionEmail: Subscription;
   emailExist: boolean = false;
   user: User;
@@ -64,7 +65,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.roles = this.as.getRol();
     this.users$ = this.as.getUsers();
-    this.users$.subscribe(data => {
+    this.subscriptionUser = this.users$.subscribe(data => {
       this.users = data;
     });
     this.email$ = this.email.valueChanges;
@@ -75,13 +76,14 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscriptionUser.unsubscribe();
     this.subscriptionEmail.unsubscribe();
   }
 
   submitRegister() {
     this.errors = [];
     this.user = this.prepareSaveUser();
-    this.as.registerUser(this.user.email, this.pass).then((credential: firebase.auth.UserCredential) => {
+    this.as.registerUser(this.user.email, this.pass.value).then((credential: firebase.auth.UserCredential) => {
           credential.user.sendEmailVerification();
           this.user.uid = credential.user.uid;
           this.showToast('success', '¡Genial!', 'Usuario creado satisfactoriamente');

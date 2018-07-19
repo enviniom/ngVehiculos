@@ -10,7 +10,7 @@
     <nb-card-header>Testing array</nb-card-header>
     <nb-card-body>
       <input type="text" (keyup)="testing2()" [(ngModel)]="valor">
-      <button class="btn btn-hero-info" *ngIf="mostrar">Click to test2</button>
+      <button class="btn btn-hero-info" *ngIf="mostrar" (click)="testing3()">Click to test2</button>
     </nb-card-body>
 
   </nb-card>

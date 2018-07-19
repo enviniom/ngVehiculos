@@ -93,11 +93,7 @@ export class DashboardComponent implements OnDestroy {
   }
 
   testing() {
-    let users:Observable<User[]> = this.as.getUsers()
-    users.subscribe((data) => {
-      console.log('data', data);
-      this.arrayUsers = data;
-    });
+    this.as.logout()
   }
 
   testing2() {
@@ -105,6 +101,12 @@ export class DashboardComponent implements OnDestroy {
       console.log('Inicia testing2');
       this.mostrar = this.buscarArray();
     }
+  }
+
+  testing3() {
+    console.log('user$ ', this.as.user$);
+    console.log('user ', this.as.user);
+    console.log('userDetails ', this.as.userDetails);
   }
 
   buscarArray() {

@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    protected as: AuthService,
+    protected authS: AuthService,
     protected router: Router
   ) {
     this.buildForm();
@@ -47,33 +47,22 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() { }
 
-  /* submitLogin(): void {
-    const email = this.loginForm.get("email").value;
-    const pass = this.loginForm.get("pass").value;
+  submitLogin() {
     this.errors = this.messages = [];
     this.submitted = true;
 
-    this.as.authenticate(email, pass).subscribe((result: NbAuthResult) => {
+    this.authS.signInWithEmail(this.email.value, this.pass.value)
+    .then((res) => {
       this.submitted = false;
-
-      if (result.isSuccess()) {
-        this.messages = result.getMessages();
-      } else {
-        if (this.errorCodes.hasOwnProperty(result.getErrors()[0])) {
-          this.errors = [this.errorCodes[result.getErrors()[0]]];
-        } else {
-          this.errors = result.getErrors();
-        }
-      }
-
-      const redirect = result.getRedirect();
-      if (redirect) {
-        setTimeout(() => {
-          return this.router.navigateByUrl(redirect);
-        }, this.redirectDelay);
-      }
-    });
-  } */
+      this.messages = ['Ultimo ingreso a la plataforma',res.user.metadata.lastSignInTime];
+      this.redirectToDashboard();
+      this.authS.subscribeUser();
+    })
+    .catch((err) => {
+      this.submitted = false;
+      this.errors = [err];
+    })
+  }
 
   get email() {
     return this.loginForm.get("email");
