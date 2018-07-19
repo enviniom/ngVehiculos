@@ -89,12 +89,13 @@ export class AuthService {
 
 
   // metodos transversales
-  logout() {
+  logout(): boolean {
     this.afa.auth.signOut();
     if(this.userSub) {
       this.userSub.unsubscribe()
     }
     console.log('usersub unsubscribed', this.userSub);
+    return true;
   }
 
   isLoggedIn() {

@@ -11,22 +11,19 @@ import { NbAuthResult } from '@nebular/auth';
 export class LogoutComponent implements OnInit {
 
   redirectDelay: number = 1500;
+  ok: boolean = false;
 
-  constructor(private as: AuthService, private router: Router) { }
+  constructor(private authS: AuthService, private router: Router) { }
 
   ngOnInit() {
-    /* this.logout(); */
+    this.logout();
   }
 
-  /* logout() {
-    this.as.logout().subscribe((result: NbAuthResult) => {
-      const redirect = result.getRedirect();
-      if (redirect) {
-        setTimeout(() => {
-          return this.router.navigateByUrl(redirect);
-        }, this.redirectDelay);
-      }
-    })
-  } */
+  logout() {
+    this.ok = this.authS.logout();
+    setTimeout(() => {
+      this.router.navigate(['auth/login']);
+    }, this.redirectDelay);
+  }
 
 }
