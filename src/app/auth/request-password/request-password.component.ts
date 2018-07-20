@@ -27,7 +27,7 @@ export class RequestPasswordComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    protected as: AuthService,
+    protected authS: AuthService,
     protected router: Router,
   ) {
     this.buildForm();
@@ -42,18 +42,15 @@ export class RequestPasswordComponent implements OnInit {
   ngOnInit() {
   }
 
-  // TODO: Pasar el submitRequest() { } de Promise a Observable
-
-  /* submitRequest(): void {
+  submitRequest(): void {
     const email = this.reqPassForm.get('email').value;
     this.errors = this.messages = [];
     this.submitted = true;
 
-    this.as.requestPass(email, this.actionCodeSettings).then( (res) => {
-      this.messages = ["Último ingreso: ",]
+    this.authS.requestPass(email, this.actionCodeSettings).then( (res) => {
       this.submitted = false;
       console.log('res', res);
-      // this.redirectToDashboard();
+      this.redirectToDashboard();
     }).catch( (err) => {
       this.submitted = false;
       if (this.errorCodes.hasOwnProperty(err.code)) {
@@ -62,7 +59,7 @@ export class RequestPasswordComponent implements OnInit {
         this.errors = [err]
       }
     })
-  } */
+  }
 
   get email() {
     return this.reqPassForm.get('email');

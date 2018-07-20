@@ -12,6 +12,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
     group: true,
   },
   {
+    title: 'Vehículos',
+    icon: 'fa fa-truck',
+    link: '/pages/vehiculos/listar'
+  },
+  {
     title: 'usuario',
     icon: ''
   },
