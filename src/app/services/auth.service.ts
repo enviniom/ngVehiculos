@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import { AngularFireAuth } from "angularfire2/auth";
 import { Observable, Subscription, from, of as observableOf } from "rxjs";
-import { map, switchMap, tap, flatMap } from "rxjs/operators";
-import { Router } from "@angular/router";
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "angularfire2/firestore";
+import { tap, flatMap } from "rxjs/operators";
+import { AngularFirestore, AngularFirestoreDocument } from "angularfire2/firestore";
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +18,6 @@ export class AuthService {
     private afa: AngularFireAuth,
     private db: AngularFirestore
   ) {
-
     this.user$ = this.afa.authState;
     this.subscribeUser();
   }
@@ -34,7 +32,13 @@ export class AuthService {
         this.user = u;
         console.log('this.user ', this.user);
       }),
-      flatMap(u => this.db.doc<User>(`users/${u.uid}`).valueChanges())
+      flatMap(u => {
+        if (u) {
+          return this.db.doc<User>(`users/${u.uid}`).valueChanges()
+        } else {
+          return observableOf(null);
+        }
+      })
     ).subscribe(ud => {
       if (ud) {
         this.userDetails = ud;
@@ -49,6 +53,20 @@ export class AuthService {
   // Para registro de usuarios
   getUsers() {
     return this.db.collection<User>('users').valueChanges();
+  }
+
+  // TODO: Pasar los userDetails a observables
+  getUserDetails() {
+    const promise = new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (this.userDetails) {
+          resolve(this.userDetails)
+        } else {
+          reject(new Error('No hay detalles de usuario'));
+        }
+      }, 2000);
+  });
+    return promise;
   }
 
   registerUser(email, pass) {

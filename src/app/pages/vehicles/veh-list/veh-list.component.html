@@ -1,3 +1,13 @@
-<p>
-  veh-list works!
-</p>
+<nb-card>
+  <nb-card-header>
+    Lista de vehículos
+  </nb-card-header>
+
+  <nb-card-body>
+    <ng2-smart-table
+    [settings]="settings" [source]="vehiculos"
+    (create)="onCreate($event)"
+    (delete)="onDeleteConfirm($event)">
+    </ng2-smart-table>
+  </nb-card-body>
+</nb-card>

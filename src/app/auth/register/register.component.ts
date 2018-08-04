@@ -3,8 +3,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { AuthService, User } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
-import { ToasterService, ToasterConfig, Toast } from "angular2-toaster";
-import 'style-loader!angular2-toaster/toaster.css';
+import { ToasterService, Toast } from "angular2-toaster";
 
 @Component({
   selector: "register",
@@ -31,14 +30,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     "auth/weak-password": "Contraseña débil"
   };
   roles: Observable<any>;
-  // Toast Notification declaration
-  config: ToasterConfig;
 
   constructor(
     private fb: FormBuilder,
     protected as: AuthService,
     protected router: Router,
-    private ts: ToasterService
+    private toastS: ToasterService
   ) {
     this.buildForm();
   }
@@ -174,15 +171,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   // Build toast notificaction
   private showToast(type: string, title: string, body: string) {
-
-    this.config = new ToasterConfig({
-      newestOnTop: true,
-    });
     const toast: Toast = {
       type: type,
       title: title,
       body: body
     };
-    this.ts.popAsync(toast);
+    this.toastS.popAsync(toast);
   }
 }
