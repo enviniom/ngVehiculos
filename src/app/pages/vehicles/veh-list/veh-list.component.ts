@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { VehiclesService, Vehiculo } from "../../../services/vehicles.service";
 import { Router } from "@angular/router";
+import { AuditService, Event } from "../../../services/audit.service";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
   selector: "veh-list",
@@ -11,6 +13,7 @@ import { Router } from "@angular/router";
 export class VehListComponent implements OnInit, OnDestroy {
   private vehiculosSub: Subscription;
   private redirectDelay: number = 200;
+  private e:Event;
   vehiculos: Vehiculo[];
   settings = {
     mode: "external",
@@ -43,7 +46,11 @@ export class VehListComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor(private vehS: VehiclesService, protected router: Router) {}
+  constructor(private vehS: VehiclesService,
+    private authS: AuthService,
+    protected router: Router,
+    private auditS: AuditService,
+  ) {}
 
   ngOnInit() {
     this.vehiculosSub = this.vehS.getVehiculos().subscribe(data => {
@@ -63,11 +70,25 @@ export class VehListComponent implements OnInit, OnDestroy {
 
   onDeleteConfirm(event): void {
     if (window.confirm("¿Está seguro de eliminar el vehículo?")) {
-      event.confirm.resolve();
       console.log("Evento", event.data.id);
-      this.vehS.deleteVehiculo(event.data.id);
-    } else {
-      event.confirm.reject();
+      this.vehS.deleteVehiculo(event.data.id).then(() => {
+        this.e = {
+          accion: "borrar",
+          coleccion: "vehiculos",
+          descripcion: "se eliminó el vehículo " + event.data.placa,
+          fecha: new Date(),
+          autor: this.authS.userDetails.email,
+        }
+        this.auditS.addEvent(this.e, 'vehiculosLog')
+                    .then(res => console.log('res audit', res))
+                    .catch(err => console.log('err audit', err))
+      })
     }
+  }
+
+  onEdit(event): void {
+    setTimeout(() => {
+      this.router.navigate(["/pages/vehiculos",event.data.id])
+    }, this.redirectDelay);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { VehiclesService, Vehiculo } from '../../../services/vehicles.service';
-import { AuditService } from '../../../services/audit.service';
+import { AuditService, Event } from '../../../services/audit.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
@@ -14,7 +14,7 @@ import { ToasterService, Toast } from 'angular2-toaster';
 export class VehAddComponent implements OnInit, OnDestroy {
 
   public formVehCreate: FormGroup;
-  private redirectDelay: number = 1000;
+  private e: Event;
   public errors: string[] = [];
   public submitted: boolean = false;
   private subscriptionVeh: Subscription;
@@ -27,17 +27,19 @@ export class VehAddComponent implements OnInit, OnDestroy {
   private errorCodes: object = {
 
   }
-  public tipos: string[] = [
-    "Camión",
-    "Camioneta Sencilla",
-    "Camioneta Doblecabina",
-    "Campero",
-    "Sedán"
+  public tipos: Object[] = [
+    { tipo: "Camión", foto: "assets/vehiculos/cami.jpg"},
+    { tipo: "Camioneta Sencilla", foto: "assets/vehiculos/case.jpg"},
+    { tipo: "Camioneta Doblecabina", foto: "assets/vehiculos/doca.jpg"},
+    { tipo: "Campero", foto: "assets/vehiculos/camp.jpg"},
+    { tipo: "Sedán", foto: "assets/vehiculos/sedan.jpg"},
+    { tipo: "Cabinado", foto: "assets/vehiculos/cabi.jpg"},
   ];
   public estados: string[] = ['Activo', 'Inactivo'];
   public anios: string[] = [];
   public accion: string = 'Crear Vehículo';
   public horo: boolean = true;
+  public message: string;
 
   constructor(
     private vehS: VehiclesService,
@@ -68,6 +70,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
       horasMant: ['', ],
       responsable: ['', ],
       eHidraulico: ['', ],
+      fotoUrl: ['assets/vehiculos/cami.jpg',]
     })
   };
   get placa() { return this.formVehCreate.get('placa'); };
@@ -76,6 +79,10 @@ export class VehAddComponent implements OnInit, OnDestroy {
   get tipo() { return this.formVehCreate.get('tipo'); };
 
   ngOnInit() {
+    this.message = 'Espere un momento, buscando el vehículo seleccionado';
+    setTimeout(() => {
+      this.message = '¡Oh vaya!, no se encontró el vehículo especificado'
+    }, 10000);
     this.showeHidraulico = true;
     this.buildForm();
     this.subscriptionVeh = this.vehS.getVehiculos().subscribe(data => {
@@ -88,7 +95,12 @@ export class VehAddComponent implements OnInit, OnDestroy {
     this.subscriptionPlaca = this.placa.valueChanges.subscribe(value => {
       this.placaExist = this.placaSearchArray(value);
     })
-    this.subscriptionTipoVeh = this.tipo.valueChanges.subscribe(value => {
+    this.subscriptionTipoVeh = this.tipo.valueChanges.subscribe((value: string) => {
+      this.tipos.forEach((tipoVeh: {tipo: string, url: string}) => {
+        if (tipoVeh.tipo.localeCompare(value)===0) {
+          this.formVehCreate.get('fotoUrl').setValue(tipoVeh.url)
+        }
+      });
       let s: string = 'Camión';
       if (s.localeCompare(value)===0) {
         this.showeHidraulico = true;
@@ -101,6 +113,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
     for (let i = 0; i < 50; i++) {
       this.anios[i] = String(2019-i);
     }
+    this.vehiculo = this.prepareSaveVeh();
   };
 
   ngOnDestroy() {
@@ -137,6 +150,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
       notas: formModel.notas as string,
       responsable: formModel.responsable as string,
       eHidraulico: formModel.eHidraulico as string,
+      fechaCreacion: new Date(),
     }
     return saveVeh;
   }
@@ -152,6 +166,16 @@ export class VehAddComponent implements OnInit, OnDestroy {
       console.log('res doc ref', res);
       this.submitted = false;
       this.buildForm();
+      this.e = {
+        accion: "crear",
+        coleccion: "vehiculos",
+        descripcion: "se creó el vehículo " + this.vehiculo.placa,
+        fecha: new Date(),
+        autor: this.authS.userDetails.email,
+      }
+      this.auditS.addEvent(this.e, 'vehiculosLog')
+                    .then(res => console.log('res audit', res))
+                    .catch(err => console.log('err audit', err))
     }).catch(err => {
       if (this.errorCodes.hasOwnProperty(err.code)) {
         this.errors = [this.errorCodes[err.code]];

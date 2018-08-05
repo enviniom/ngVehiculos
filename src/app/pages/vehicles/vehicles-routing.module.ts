@@ -4,8 +4,9 @@ import { Routes, RouterModule } from '@angular/router';
 import { VehiclesComponent } from './vehicles.component';
 import { VehListComponent } from './veh-list/veh-list.component';
 import { VehViewComponent } from './veh-view/veh-view.component';
-import { VehAddComponent } from './veh-add/veh-add.component';
+import { VehAddComponent,  } from './veh-add/veh-add.component';
 import { AuthGuardAdmin } from '../../services/auth.guard';
+import { VehEditComponent } from './veh-add/veh-edit.component';
 
 const routes: Routes = [{
   path:'',
@@ -17,6 +18,10 @@ const routes: Routes = [{
   {
     path: 'nuevo',
     component: VehAddComponent,
+  },
+  {
+    path: ':idVehiculo',
+    component: VehEditComponent,
   },
   {
     path: 'ver',
@@ -35,4 +40,5 @@ export const routedComponents = [
   VehListComponent,
   VehViewComponent,
   VehAddComponent,
+  VehEditComponent,
 ];

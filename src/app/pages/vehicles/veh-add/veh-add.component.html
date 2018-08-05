@@ -3,7 +3,7 @@
     Datos del Vehículo
     <button type="button" class="float-right btn btn-info" routerLink="/pages/vehiculos/listar"> Volver </button>
   </nb-card-header>
-  <nb-card-body>
+  <nb-card-body *ngIf="vehiculo; else noVehiculo">
     <form (ngSubmit)="submitVehiculo()" [formGroup]="formVehCreate" novalidate>
       <div *ngIf="errors && errors.length > 0 && !submited" class="alert alert-danger" role="alert">
         <div>
@@ -23,7 +23,7 @@
                 ¡Se requiere una placa!
               </small>
             </div>
-            <div *ngIf="placaExist">
+            <div *ngIf="placaExist && placa.dirty">
               <small class="form-text error">
                 ¡Oh oh, ya existe esta placa!
               </small>
@@ -169,8 +169,12 @@
       </div>
 
 
-      <button type="submit" class="btn btn-primary btn-block">{{accion}}</button>
+      <button type="submit" [disabled]="!formVehCreate.valid || placaExist" class="btn btn-primary btn-block">{{accion}}</button>
     </form>
   </nb-card-body>
+  <ng-template #noVehiculo>
+    <nb-card-body>
+      <p> {{message}} </p>
+    </nb-card-body>
+  </ng-template>
 </nb-card>
-

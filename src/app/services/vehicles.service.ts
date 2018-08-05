@@ -23,6 +23,9 @@ export interface Vehiculo {
   notas?: string;
   responsable?: string;
   eHidraulico?: string;
+  fotoUrl?: string;
+  fechaCreacion?: Date;
+  fechaEdicion?: Date;
 }
 
 @Injectable({
@@ -61,7 +64,7 @@ export class VehiclesService {
   }
 
   deleteVehiculo(id: string) {
-    this.vehiculosCol.doc(id).delete();
+    return this.vehiculosCol.doc(id).delete();
   }
 
 }

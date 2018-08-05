@@ -77,7 +77,7 @@
         </small>
       </div>
     </div>
-    <button [disabled]="!registerForm.valid && emailExist" class="btn btn-block btn-hero-success" [class.btn-pulse]="submitted">
+    <button [disabled]="!registerForm.valid || emailExist" class="btn btn-block btn-hero-success" [class.btn-pulse]="submitted">
       Ingresar
     </button>
   </form>

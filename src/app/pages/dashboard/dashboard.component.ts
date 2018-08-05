@@ -92,8 +92,19 @@ export class DashboardComponent implements OnDestroy {
     });
   }
 
+  public tipos: Object[] = [
+    { tipo: "Camión", foto: "assets/vehiculos/cami.jpg"},
+    { tipo: "Camioneta Sencilla", foto: "assets/vehiculos/case.jpg"},
+    { tipo: "Camioneta Doblecabina", foto: "assets/vehiculos/doca.jpg"},
+    { tipo: "Campero", foto: "assets/vehiculos/camp.jpg"},
+    { tipo: "Sedán", foto: "assets/vehiculos/sedan.jpg"},
+    { tipo: "Cabinado", foto: "assets/vehiculos/cabi.jpg"},
+  ];
+
   testing() {
-    this.as.logout()
+    this.tipos.forEach(tipoVeh => {
+      console.log('tipo 1', tipoVeh);
+    });
   }
 
   testing2() {
