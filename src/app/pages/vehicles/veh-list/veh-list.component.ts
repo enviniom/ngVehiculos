@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Subscription } from "rxjs";
 import { VehiclesService, Vehiculo } from "../../../services/vehicles.service";
 import { Router } from "@angular/router";
-import { AuditService, Event } from "../../../services/audit.service";
+import { AuditService, Evento } from "../../../services/audit.service";
 import { AuthService } from "../../../services/auth.service";
 
 @Component({
@@ -13,7 +13,7 @@ import { AuthService } from "../../../services/auth.service";
 export class VehListComponent implements OnInit, OnDestroy {
   private vehiculosSub: Subscription;
   private redirectDelay: number = 200;
-  private e:Event;
+  private evtAudit:Evento;
   vehiculos: Vehiculo[];
   settings = {
     mode: "external",
@@ -72,14 +72,14 @@ export class VehListComponent implements OnInit, OnDestroy {
     if (window.confirm("¿Está seguro de eliminar el vehículo?")) {
       console.log("Evento", event.data.id);
       this.vehS.deleteVehiculo(event.data.id).then(() => {
-        this.e = {
+        this.evtAudit = {
           accion: "borrar",
           coleccion: "vehiculos",
           descripcion: "se eliminó el vehículo " + event.data.placa,
           fecha: new Date(),
           autor: this.authS.userDetails.email,
         }
-        this.auditS.addEvent(this.e, 'vehiculosLog')
+        this.auditS.addEvent(this.evtAudit, 'vehiculosLog')
                     .then(res => console.log('res audit', res))
                     .catch(err => console.log('err audit', err))
       })

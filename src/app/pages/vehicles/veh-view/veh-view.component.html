@@ -1,3 +1,63 @@
-<p>
-  veh-view works!
-</p>
+<div class="row">
+  <div class="col-md-3 mb-3 sm-2 xs-1 d-flex align-items-stretch" *ngFor="let vehiculo of vehiculosOb$ | async">
+    <nb-reveal-card>
+      <nb-card-front>
+        <nb-card>
+          <nb-card-header class="text-center">
+            <strong>{{vehiculo.placa}}</strong>
+          </nb-card-header>
+          <nb-card-body>
+            <div>
+              <img width="200px" class="img-fluid img-thumbnail" src="{{vehiculo.fotoUrl}}" alt="Foto {{vehiculo.placa}}">
+            </div>
+            <div class="mt-3 ml-4">
+              <div class="row">
+                <label for="marca">Marca:</label>
+                <p id="marca">{{vehiculo.marca}}</p>
+              </div>
+              <div class="row">
+                <label for="tipo">Tipo:</label>
+                <p id="tipo">{{vehiculo.tipo}}</p>
+              </div>
+              <div class="row">
+                <label for="horo">Horometro:</label>
+                <p id="horo">{{vehiculo.horometro}}</p>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </nb-card-front>
+      <nb-card-back>
+        <nb-card>
+          <nb-card-body>
+            <div class="mt-3 ml-4">
+              <div class="row">
+                <label for="marca">Modelo:</label>
+                <p id="modelo">{{vehiculo.modelo}}</p>
+              </div>
+              <div class="row">
+                <label for="marca">Color:</label>
+                <p id="marca"> {{vehiculo.color}}</p>
+              </div>
+              <div class="row">
+                <label for="soat">SOAT:</label>
+                <p id="soat"> {{vehiculo.soat.day}}/{{vehiculo.soat.month}}/{{vehiculo.soat.year}}</p>
+              </div>
+              <div class="row">
+                <label for="rtm">Tecnico Mecánico:</label>
+                <p id="rtm"> {{vehiculo.rtm.day}}/{{vehiculo.rtm.month}}/{{vehiculo.rtm.year}}</p>
+              </div>
+              <div class="row">
+                <label for="resp">Responsable:</label>
+                <p id="resp"> {{vehiculo.responsable}}</p>
+              </div>
+              <div class="notas">
+                  <label for="notas">Notas:</label>
+                  <p id="notas"> {{vehiculo.notas}}</p>
+                </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </nb-card-back>
+    </nb-reveal-card>
+  </div>

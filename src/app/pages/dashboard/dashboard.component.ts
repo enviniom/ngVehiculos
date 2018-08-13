@@ -4,6 +4,8 @@ import { takeWhile } from 'rxjs/operators/takeWhile' ;
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../services/auth.service';
 import { Observable } from 'rxjs';
+import { AngularFireStorage } from 'angularfire2/storage';
+import { finalize } from 'rxjs/operators';
 
 interface CardSettings {
   title: string;
@@ -84,7 +86,7 @@ export class DashboardComponent implements OnDestroy {
     ],
   };
 
-  constructor(private themeService: NbThemeService, private as: AuthService) {
+  constructor(private themeService: NbThemeService, private storage: AngularFireStorage) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
@@ -92,45 +94,39 @@ export class DashboardComponent implements OnDestroy {
     });
   }
 
-  public tipos: Object[] = [
-    { tipo: "Camión", foto: "assets/vehiculos/cami.jpg"},
-    { tipo: "Camioneta Sencilla", foto: "assets/vehiculos/case.jpg"},
-    { tipo: "Camioneta Doblecabina", foto: "assets/vehiculos/doca.jpg"},
-    { tipo: "Campero", foto: "assets/vehiculos/camp.jpg"},
-    { tipo: "Sedán", foto: "assets/vehiculos/sedan.jpg"},
-    { tipo: "Cabinado", foto: "assets/vehiculos/cabi.jpg"},
-  ];
+  uploadPercent: Observable<number>;
+  downloadURL: Observable<string | null>;
+  percent: number = 0;
+  url: string;
+
+  uploadFile(event) {
+    const file = event.target.files[0];
+    const filePath = 'images/vehiculos';
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+
+    // observe percentage changes
+    this.uploadPercent = task.percentageChanges();
+    // get notified when the download URL is available
+    task.snapshotChanges().pipe(
+        finalize(() => {
+          this.downloadURL = fileRef.getDownloadURL();
+          this.downloadURL.pipe(
+            finalize(() => console.log('Terminó $downloadURL'))
+          ).subscribe(n => this.url = n);
+        })
+     ).subscribe()
+     this.uploadPercent.pipe(
+       finalize(() => console.log('Terminó $uploadPercent'))
+     ).subscribe(n => this.percent = n);
+    setTimeout(() => {
+      console.log('procentaje ', this.percent);
+      console.log('url ', this.url);
+    }, 5000);
+  }
 
   testing() {
-    this.tipos.forEach(tipoVeh => {
-      console.log('tipo 1', tipoVeh);
-    });
-  }
 
-  testing2() {
-    if (this.valor) {
-      console.log('Inicia testing2');
-      this.mostrar = this.buscarArray();
-    }
-  }
-
-  testing3() {
-    console.log('user$ ', this.as.user$);
-    console.log('user ', this.as.user);
-    console.log('userDetails ', this.as.userDetails);
-  }
-
-  buscarArray() {
-    console.log('Inició búsqueda');
-    let test: boolean = true;
-    this.arrayUsers.forEach(element => {
-      if (element.email.localeCompare(this.valor)===0) {
-        console.log('entró en if');
-        test = false;
-      }
-    });
-    console.log('Terminó ciclo retorna test');
-    return test;
   }
 
   ngOnDestroy() {

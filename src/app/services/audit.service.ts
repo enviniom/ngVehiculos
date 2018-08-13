@@ -8,7 +8,7 @@ import { AngularFirestore, DocumentReference } from 'angularfire2/firestore';
  * autor = persona que realiza la acción
  **/
 
- export interface Event {
+ export interface Evento {
   accion: string,
   coleccion: string,
   descripcion: string,
@@ -23,7 +23,7 @@ export class AuditService {
 
   constructor( private db: AngularFirestore) { }
 
-  addEvent(event: Event, col: string): Promise<DocumentReference> {
+  addEvent(event: Evento, col: string): Promise<DocumentReference> {
     return this.db.collection(col).add(event);
   }
 }

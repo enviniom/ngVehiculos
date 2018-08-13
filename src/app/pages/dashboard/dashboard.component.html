@@ -1,24 +1,36 @@
 <div class="row">
   <nb-card>
-    <nb-card-body>Hello from ngx-admin sandbox project.</nb-card-body>
-    <button class="btn btn-hero-info" (click)="testing()">Click to show</button>
+    <nb-card-header>
+      <h3>Esta tarjeta es para subir las imagenes</h3>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="custom-file">
+        <input class="custom-file-input" type="file" (change)="uploadFile($event)" />
+        <label class="custom-file-label">Selecciona una imágen</label>
+      </div>
+      <!-- <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroupFileAddon01">Cargar imágen</span>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="inputGroupFile01" (change)="uploadFile($event)" aria-describedby="inputGroupFileAddon01">
+          <label class="custom-file-label" for="inputGroupFile01">Selecciona la imágen</label>
+        </div>
+      </div> -->
+      <p>
+        <ngb-progressbar [showValue]="true" type="info" [value]="percent"></ngb-progressbar>
+      </p>
+      <a [href]="downloadURL | async">{{ downloadURL | async }}</a>
+    </nb-card-body>
   </nb-card>
 </div>
-
 <div class="row">
   <nb-card>
-    <nb-card-header>Testing array</nb-card-header>
+    <nb-card-header>
+      <h4>Esta tarjeta es para mosrar las imágenes subidas</h4>
+    </nb-card-header>
     <nb-card-body>
-      <input type="text" (keyup)="testing2()" [(ngModel)]="valor">
-      <button class="btn btn-hero-info" *ngIf="mostrar" (click)="testing3()">Click to test2</button>
-
-      <div>
-        <i class="icon-truck2">icon</i>
-        <span class="icon-truck2"></span>
-        <i class="la la-truck"></i>
-        <i class="fa fa-truck"></i>
-      </div>
-
+      <img [src]="downloadURL | async" />
     </nb-card-body>
   </nb-card>
 </div>

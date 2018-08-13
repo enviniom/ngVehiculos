@@ -1,117 +1,82 @@
-import { Component, OnInit, OnDestroy,  } from '@angular/core';
-import { VehiclesService, Vehiculo } from '../../../services/vehicles.service';
-import { AuditService, Event } from '../../../services/audit.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../../../services/auth.service';
-import { ToasterService, Toast } from 'angular2-toaster';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { VehiclesService, Vehiculo } from "../../../services/vehicles.service";
+import { AuditService, Evento } from "../../../services/audit.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Subscription, Observable } from "rxjs";
+import { AuthService } from "../../../services/auth.service";
+import { ToasterService, Toast } from "angular2-toaster";
+import { AngularFireStorage } from "angularfire2/storage";
+import { finalize } from "rxjs/operators";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
-  selector: 'veh-edit',
-  templateUrl: './veh-add.component.html',
-  styleUrls: ['./veh-add.component.scss']
+  selector: "veh-edit",
+  templateUrl: "./veh-add.component.html",
+  styleUrls: ["./veh-add.component.scss"]
 })
 export class VehEditComponent implements OnInit, OnDestroy {
-
   public formVehCreate: FormGroup;
-  private id: string;
-  private e: Event;
-  public message: string;
+  private evtAudit: Evento; // Evento para la tabla de auditoría
+  private evtImg: any;
   public errors: string[] = [];
   public submitted: boolean = false;
   private subscriptionVeh: Subscription;
   private subscriptionTipoVeh: Subscription;
   private subscriptionPlaca: Subscription;
-  public placas: string[];
-  public placaExist: boolean = false;
+  public placas: string[]; // Placas que existen en la bd
+  public placaExist: boolean = false; // indica si la placa ya existe en la bd
   public vehiculo: Vehiculo;
-  public showeHidraulico: boolean;
-  private errorCodes: object = {
-
-  }
+  public showeHidraulico: boolean; // Muestra equipo hidráulico en la vista si es camión
+  private errorCodes: object = {};
   public tipos: Object[] = [
-    { tipo: "Camión", foto: "assets/vehiculos/cami.jpg"},
-    { tipo: "Camioneta Sencilla", foto: "assets/vehiculos/case.jpg"},
-    { tipo: "Camioneta Doblecabina", foto: "assets/vehiculos/doca.jpg"},
-    { tipo: "Campero", foto: "assets/vehiculos/camp.jpg"},
-    { tipo: "Sedán", foto: "assets/vehiculos/sedan.jpg"},
-    { tipo: "Cabinado", foto: "assets/vehiculos/cabi.jpg"},
+    { tipo: "Camión", foto: "assets/vehiculos/cami.jpg" },
+    { tipo: "Camioneta Sencilla", foto: "assets/vehiculos/case.jpg" },
+    { tipo: "Camioneta Doblecabina", foto: "assets/vehiculos/doca.jpg" },
+    { tipo: "Campero", foto: "assets/vehiculos/camp.jpg" },
+    { tipo: "Sedán", foto: "assets/vehiculos/sedan.jpg" },
+    { tipo: "Cabinado", foto: "assets/vehiculos/cabi.jpg" }
   ];
-  public estados: string[] = ['Activo', 'Inactivo'];
-  public anios: string[] = [];
-  public accion: string = 'Actualizar Vehículo';
+  public estados: string[] = ["Activo", "Inactivo"];
+  public anios: string[] = []; // Numero del select "años" de la vista
+  public accion: string = "Actualizar Vehículo"; // Del botón guardar o editar
   public horo: boolean = true;
+  public message: string;
+  private id: string; // Para solicitar los datos del vehículo a editar
+
+  // Variables para guardar la imágen del vehículo
+  private uploadPercent: Observable<number>;
+  private downloadURL: Observable<string | null>;
+  public percent: number = 0;
 
   constructor(
     private vehS: VehiclesService,
     private auditS: AuditService,
     private fb: FormBuilder,
     private authS: AuthService,
+    private storage: AngularFireStorage,
     private toastS: ToasterService,
     private ruta: ActivatedRoute,
-    private router: Router,
-  ) {
+    private router: Router
+  ) {}
+
+  get placa() {
+    return this.formVehCreate.get("placa");
+  }
+  get color() {
+    return this.formVehCreate.get("color");
+  }
+  get marca() {
+    return this.formVehCreate.get("marca");
+  }
+  get tipo() {
+    return this.formVehCreate.get("tipo");
   }
 
-
-  buildFormSi(): void {
-    this.showeHidraulico = true;
-    this.formVehCreate = this.fb.group({
-      placa: [this.vehiculo.placa, Validators.compose([Validators.required, Validators.minLength(6)])],
-      tipo: [this.vehiculo.tipo,],
-      color: [this.vehiculo.color, Validators.required],
-      anio: [this.vehiculo.anio,],
-      marca: [this.vehiculo.marca, Validators.required],
-      modelo: [this.vehiculo.modelo, ],
-      an8: [this.vehiculo.an8, ],
-      proveedor: [this.vehiculo.proveedor, ],
-      contrato: [this.vehiculo.contrato, ],
-      factura: [this.vehiculo.factura, ],
-      estado: [this.vehiculo.estado, ],
-      soat: this.vehiculo.soat,
-      rtm: this.vehiculo.rtm,
-      horometro: [this.vehiculo.horometro, ],
-      notas: [this.vehiculo.notas, ],
-      horasMant: [this.vehiculo.horasMant, ],
-      responsable: [this.vehiculo.responsable, ],
-      eHidraulico: [this.vehiculo.eHidraulico, ],
-    })
-  };
-
-  buildFormNo(): void {
-    this.showeHidraulico = true;
-    this.formVehCreate = this.fb.group({
-      placa: ['', Validators.compose([Validators.required, Validators.minLength(6)])],
-      tipo: ['Camión',],
-      color: ['', Validators.required],
-      anio: ['2019',],
-      marca: ['', Validators.required],
-      modelo: ['', ],
-      an8: ['', ],
-      proveedor: ['', ],
-      contrato: ['', ],
-      factura: ['', ],
-      estado: ['Activo', ],
-      soat: ['', ],
-      rtm: ['', ],
-      horometro: ['', ],
-      notas: ['', ],
-      horasMant: ['', ],
-      responsable: ['', ],
-      eHidraulico: ['', ],
-    })
-  };
-
-  get placa() { return this.formVehCreate.get('placa'); };
-  get color() { return this.formVehCreate.get('color'); };
-  get marca() { return this.formVehCreate.get('marca'); };
-  get tipo() { return this.formVehCreate.get('tipo'); };
-
   ngOnInit() {
-    this.message = 'Espere un momento, buscando el vehículo seleccionado';
+    this.evtImg = null;
+    this.message = "Espere un momento, buscando el vehículo seleccionado";
     setTimeout(() => {
-      this.message = '¡Oh vaya!, no se encontró el vehículo especificado'
+      this.message = "¡Oh vaya!, no se encontró el vehículo especificado";
     }, 10000);
     this.showeHidraulico = true;
     this.id = this.ruta.snapshot.params.idVehiculo;
@@ -119,49 +84,193 @@ export class VehEditComponent implements OnInit, OnDestroy {
     this.subscriptionVeh = this.vehS.getVehiculos().subscribe(data => {
       this.placas = [];
       data.forEach(element => {
-        if (element.id.localeCompare(this.id)===0) {
+        if (element.id.localeCompare(this.id) === 0) {
           this.vehiculo = element;
-          console.log('vehiculo ', this.vehiculo);
           this.buildFormSi();
         } else {
           this.placas.push(element.placa);
         }
       });
-      console.log('Placas ', this.placas);
     });
     this.subscriptionPlaca = this.placa.valueChanges.subscribe(value => {
       this.placaExist = this.placaSearchArray(value);
-    })
-    this.subscriptionTipoVeh = this.tipo.valueChanges.subscribe((value: string) => {
-      this.tipos.forEach((tipoVeh: {tipo: string, url: string}) => {
-        if (tipoVeh.tipo.localeCompare(value)===0) {
-          this.formVehCreate.get('fotoUrl').setValue(tipoVeh.url)
+    });
+    this.subscriptionTipoVeh = this.tipo.valueChanges.subscribe(
+      (value: string) => {
+        let url = this.formVehCreate.get("fotoUrl").value;
+        if (url.startsWith("assets")) {
+          this.tipos.forEach((tipoVeh: { tipo: string; foto: string }) => {
+            if (tipoVeh.tipo.localeCompare(value) === 0) {
+              let s: string = tipoVeh.foto;
+              this.formVehCreate.get("fotoUrl").setValue(s);
+            }
+          });
         }
-      });
-      let s: string = 'Camión';
-      if (s.localeCompare(value)===0) {
-        this.showeHidraulico = true;
-      } else {
-        this.showeHidraulico = false;
-        this.formVehCreate.get('eHidraulico').setValue('');
+        let s: string = "Camión";
+        if (s.localeCompare(value) === 0) {
+          this.showeHidraulico = true;
+        } else {
+          this.showeHidraulico = false;
+          this.formVehCreate.get("eHidraulico").setValue("");
+        }
       }
-    })
+    );
     // TODO: Hacer que tome el año inicial de la fecha del servidor
     for (let i = 0; i < 50; i++) {
-      this.anios[i] = String(2019-i);
+      this.anios[i] = String(2019 - i);
     }
-  };
+  }
 
   ngOnDestroy() {
     if (this.subscriptionPlaca) {
       this.subscriptionPlaca.unsubscribe();
-    };
+    }
     if (this.subscriptionVeh) {
       this.subscriptionVeh.unsubscribe();
     }
     if (this.subscriptionTipoVeh) {
       this.subscriptionTipoVeh.unsubscribe();
     }
+  }
+
+  buildFormSi(): void {
+    this.showeHidraulico = true;
+    this.formVehCreate = this.fb.group({
+      placa: [
+        this.vehiculo.placa,
+        Validators.compose([Validators.required, Validators.minLength(6)])
+      ],
+      tipo: [this.vehiculo.tipo],
+      color: [this.vehiculo.color, Validators.required],
+      anio: [this.vehiculo.anio],
+      marca: [this.vehiculo.marca, Validators.required],
+      modelo: [this.vehiculo.modelo],
+      an8: [this.vehiculo.an8],
+      proveedor: [this.vehiculo.proveedor],
+      contrato: [this.vehiculo.contrato],
+      factura: [this.vehiculo.factura],
+      estado: [this.vehiculo.estado],
+      soat: this.vehiculo.soat,
+      rtm: this.vehiculo.rtm,
+      horometro: [this.vehiculo.horometro],
+      notas: [this.vehiculo.notas],
+      horasMant: [this.vehiculo.horasMant],
+      responsable: [this.vehiculo.responsable],
+      eHidraulico: [this.vehiculo.eHidraulico],
+      fotoUrl: [this.vehiculo.fotoUrl]
+    });
+  }
+
+  buildFormNo(): void {
+    this.showeHidraulico = true;
+    this.formVehCreate = this.fb.group({
+      placa: [
+        "",
+        Validators.compose([Validators.required, Validators.minLength(6)])
+      ],
+      tipo: ["Camión"],
+      color: ["", Validators.required],
+      anio: ["2019"],
+      marca: ["", Validators.required],
+      modelo: [""],
+      an8: [""],
+      proveedor: [""],
+      contrato: [""],
+      factura: [""],
+      estado: ["Activo"],
+      soat: [""],
+      rtm: [""],
+      horometro: [""],
+      notas: [""],
+      horasMant: [""],
+      responsable: [""],
+      eHidraulico: [""],
+      fotoUrl: ["assets/vehiculos/cami.jpg"]
+    });
+  }
+
+  // Guardar el vehículo en la bd
+  submitVehiculo() {
+    this.errors = [];
+    this.submitted = true;
+    this.vehiculo = this.prepareSaveVeh();
+    this.beautify();
+    if (this.evtImg) {
+      this.uploadFile(this.evtImg);
+    } else {
+      this.updateVehiculo();
+    }
+  }
+
+  updateVehiculo() {
+    this.vehS
+      .updateVehiculo(this.id, this.vehiculo)
+      .then(() => {
+        this.showToast(
+          "success",
+          "¡Genial!",
+          "Vehículo actualizado satisfactoriamente"
+        );
+        this.submitted = false;
+        this.buildFormSi();
+        this.evtAudit = {
+          accion: "editar",
+          coleccion: "vehiculos",
+          descripcion: "se actualizó el vehículo " + this.vehiculo.placa,
+          fecha: new Date(),
+          autor: this.authS.userDetails.email
+        };
+        this.auditS
+          .addEvent(this.evtAudit, "vehiculosLog")
+          .then(res => console.log("res audit", res))
+          .catch(err => console.log("err audit", err));
+        this.redirectToListar();
+      })
+      .catch(err => {
+        if (this.errorCodes.hasOwnProperty(err.code)) {
+          this.errors = [this.errorCodes[err.code]];
+        } else {
+          this.errors = [err];
+        }
+        this.submitted = false;
+        this.showToast("error", "¡Chanfle!", "No se actualizó el vehículo");
+      });
+  }
+
+  prepareFile(event) {
+    this.evtImg = event;
+  }
+
+  uploadFile(event): void {
+    const file = event.target.files[0];
+    const filePath = "vehiculosImg/" + this.vehiculo.placa;
+    const fileRef = this.storage.ref(filePath);
+    const task = this.storage.upload(filePath, file);
+
+    // observa cambios en el porcentaje
+    this.uploadPercent = task.percentageChanges();
+    // notifica cuando la url de descarga está lista
+    task
+      .snapshotChanges()
+      .pipe(
+        finalize(() => {
+          this.downloadURL = fileRef.getDownloadURL();
+          this.downloadURL.subscribe(url => {
+            this.vehiculo.fotoUrl = url;
+            this.updateVehiculo();
+            this.evtImg = null;
+          }); // finaliza, no necesita unsubscribe
+        })
+      )
+      .subscribe();
+    this.uploadPercent.subscribe(n => (this.percent = n)); // finaliza, no necesita unsubscribe
+  }
+
+  testForm(): void {
+    this.errors = [];
+    this.submitted = true;
+    this.vehiculo = this.prepareSaveVeh();
+    this.beautify();
   }
 
   // Preparar los datos del vehículo a guardar
@@ -187,48 +296,9 @@ export class VehEditComponent implements OnInit, OnDestroy {
       responsable: formModel.responsable as string,
       eHidraulico: formModel.eHidraulico as string,
       fechaCreacion: new Date(),
-    }
+      fotoUrl: formModel.fotoUrl as string
+    };
     return saveVeh;
-  }
-
-  // Guardar el vehículo en la bd
-  submitVehiculo() {
-    this.errors = [];
-    this.submitted = true;
-    this.vehiculo = this.prepareSaveVeh();
-    this.beautify();
-    this.vehS.updateVehiculo(this.id, this.vehiculo).then(res => {
-      this.showToast('success', '¡Genial!', 'Vehículo actualizado satisfactoriamente');
-      console.log('res doc ref', res);
-      this.submitted = false;
-      this.buildFormSi();
-      this.e = {
-        accion: "editar",
-        coleccion: "vehiculos",
-        descripcion: "se actualizó el vehículo " + this.vehiculo.placa,
-        fecha: new Date(),
-        autor: this.authS.userDetails.email,
-      }
-      this.auditS.addEvent(this.e, 'vehiculosLog')
-                    .then(res => console.log('res audit', res))
-                    .catch(err => console.log('err audit', err));
-      this.redirectToListar();
-    }).catch(err => {
-      if (this.errorCodes.hasOwnProperty(err.code)) {
-        this.errors = [this.errorCodes[err.code]];
-      } else {
-        this.errors = [err];
-      }
-      this.submitted = false;
-      this.showToast('error', '¡Chanfle!', 'No se actualizó el vehículo');
-    });
-  }
-
-  testForm(): void {
-    this.errors = [];
-    this.submitted = true;
-    this.vehiculo = this.prepareSaveVeh();
-    this.beautify();
   }
 
   // Comprobar si la placa ya existe en la bd
@@ -238,7 +308,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
     this.placas.forEach(element => {
       if (element.localeCompare(value) === 0) {
         test = true;
-      };
+      }
     });
     return test;
   }
@@ -247,7 +317,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
   beautify() {
     if (this.vehiculo.placa) {
       this.vehiculo.placa = this.vehiculo.placa.trim();
-      this.vehiculo.placa = this.vehiculo.placa.replace(" ","");
+      this.vehiculo.placa = this.vehiculo.placa.replace(" ", "");
       this.vehiculo.placa = this.vehiculo.placa.toUpperCase();
     }
     if (this.vehiculo.color) {
@@ -307,7 +377,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
 
   redirectToListar() {
     setTimeout(() => {
-      this.router.navigate(['pages/vehiculos/listar'])
+      this.router.navigate(["pages/vehiculos/listar"]);
     }, 2000);
   }
 

@@ -15,9 +15,8 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputPlaca">Placa</label>
-            <input type="text" formControlName="placa" id="inputPlaca"
-            [class.form-control-danger]="placa.touched && placa.errors"
-            class="form-control" placeholder="Placa">
+            <input type="text" formControlName="placa" id="inputPlaca" [class.form-control-danger]="placa.touched && placa.errors" class="form-control"
+              placeholder="Placa">
             <div *ngIf="placa.invalid && (placa.dirty || placa.touched)">
               <small class="form-text error" *ngIf="placa.errors.required">
                 ¡Se requiere una placa!
@@ -34,16 +33,15 @@
           <div class="form-group">
             <label for="inputTipo">Tipo</label>
             <select class="form-control" id="inputTipo" formControlName="tipo">
-              <option *ngFor="let tipo of tipos">{{tipo}}</option>
+              <option *ngFor="let tipo of tipos">{{ tipo.tipo }}</option>
             </select>
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputColor">Color</label>
-            <input type="text" id="color" formControlName="color"
-            [class.form-control-danger]="color.touched && color.errors"
-            class="form-control" placeholder="Color">
+            <input type="text" id="color" formControlName="color" [class.form-control-danger]="color.touched && color.errors" class="form-control"
+              placeholder="Color">
             <div *ngIf="color.invalid && (color.dirty || color.touched)">
               <small class="form-text error" *ngIf="color.errors.required">
                 ¡Se requiere un color!
@@ -64,9 +62,8 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputMarca">Marca</label>
-            <input type="text" id="inputMarca" formControlName="marca"
-            [class.form-control-danger]="marca.touched && marca.errors"
-            class="form-control" placeholder="Marca">
+            <input type="text" id="inputMarca" formControlName="marca" [class.form-control-danger]="marca.touched && marca.errors" class="form-control"
+              placeholder="Marca">
             <div *ngIf="marca.invalid && (marca.dirty || marca.touched)">
               <small class="form-text error" *ngIf="marca.errors.required">
                 ¡Se requiere una marca!
@@ -77,22 +74,19 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputModelo">Modelo</label>
-            <input type="text" id="inputModelo" formControlName="modelo"
-            class="form-control" placeholder="Modelo">
+            <input type="text" id="inputModelo" formControlName="modelo" class="form-control" placeholder="Modelo">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputAn8">An8</label>
-            <input type="number" id="inputAn8" formControlName="an8"
-            class="form-control" placeholder="An8">
+            <input type="number" id="inputAn8" formControlName="an8" class="form-control" placeholder="An8">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputProveedor">Proveedor</label>
-            <input type="text" id="inputProveedor" formControlName="proveedor"
-            class="form-control" placeholder="Proveedor">
+            <input type="text" id="inputProveedor" formControlName="proveedor" class="form-control" placeholder="Proveedor">
           </div>
         </div>
       </div>
@@ -100,22 +94,19 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputContrato">Contrato</label>
-            <input type="text" id="inputContrato" formControlName="contrato"
-            class="form-control" placeholder="Contrato">
+            <input type="text" id="inputContrato" formControlName="contrato" class="form-control" placeholder="Contrato">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputFactura">Factura</label>
-            <input type="text" id="inputFactura" formControlName="factura"
-            class="form-control" placeholder="Factura">
+            <input type="text" id="inputFactura" formControlName="factura" class="form-control" placeholder="Factura">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputHorometro">Horómetro</label>
-            <input type="number" formControlName="horometro"
-            class="form-control" placeholder="Horómetro">
+            <input type="number" formControlName="horometro" class="form-control" placeholder="Horómetro">
           </div>
         </div>
         <div class="col-sm-3">
@@ -131,29 +122,25 @@
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputSoat">SOAT</label>
-            <input type="text" class="form-control" (click)="d1.open()"
-            ngbDatepicker #d1="ngbDatepicker" formControlName="soat"/>
+            <input type="text" class="form-control" (click)="d1.open()" ngbDatepicker #d1="ngbDatepicker" formControlName="soat" />
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputRtm">Técnico Mecánico</label>
-            <input type="text" class="form-control" (click)="d2.open()"
-            ngbDatepicker #d2="ngbDatepicker" formControlName="rtm"/>
+            <input type="text" class="form-control" (click)="d2.open()" ngbDatepicker #d2="ngbDatepicker" formControlName="rtm" />
           </div>
         </div>
         <div *ngIf="showeHidraulico" class="col-sm-3">
           <div class="form-group">
             <label for="inputeHidraulico">Equipo Hidráulico</label>
-            <input type="text" id="inputeHidraulico" formControlName="eHidraulico"
-            class="form-control" placeholder="">
+            <input type="text" id="inputeHidraulico" formControlName="eHidraulico" class="form-control" placeholder="">
           </div>
         </div>
         <div class="col-sm-3">
           <div class="form-group">
             <label for="inputResponsable">Responsable</label>
-            <input type="text"  id="inputResponsable" formControlName="responsable"
-            class="form-control" placeholder="Responsable">
+            <input type="text" id="inputResponsable" formControlName="responsable" class="form-control" placeholder="Responsable">
           </div>
         </div>
       </div>
@@ -161,13 +148,31 @@
         <div class="col-lg">
           <div class="form-group">
             <label for="textNotas">Notas</label>
-            <textarea placeholder="Escribe aquí las notas" class="form-control" id="textNotas"
-            matInput matTextareaAutosize matAutosizeMinRows="2"
-            matAutosizeMaxRows="5" formControlName="notas" ></textarea>
+            <textarea placeholder="Escribe aquí las notas" class="form-control" id="textNotas" matInput matTextareaAutosize matAutosizeMinRows="2"
+              matAutosizeMaxRows="5" formControlName="notas"></textarea>
           </div>
         </div>
       </div>
-
+      <div class="row">
+        <div class="col-sm-6" *ngIf="!placa.invalid && !placaExist">
+          <div class="form-group">
+            <label for="inputImg">Cargar Imágen</label>
+            <div class="custom-file">
+              <input class="custom-file-input" type="file" (change)="prepareFile($event)" />
+              <label class="custom-file-label">Selecciona una imágen</label>
+            </div>
+          </div>
+          <p>
+            <ngb-progressbar [showValue]="true" type="info" [value]="percent"></ngb-progressbar>
+          </p>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+              <label for="inputFotoUrl">Enlace de imágen</label>
+              <input type="text" id="inputFotoUrl" formControlName="fotoUrl" class="form-control" placeholder="Url de la imágen" disabled>
+            </div>
+          </div>
+      </div>
 
       <button type="submit" [disabled]="!formVehCreate.valid || placaExist" class="btn btn-primary btn-block">{{accion}}</button>
     </form>

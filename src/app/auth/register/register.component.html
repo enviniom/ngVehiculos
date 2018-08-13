@@ -2,7 +2,7 @@
   <h2 class="title">Registrar Usuarios</h2>
   <small class="form-text sub-title">Hola! Este es el módulo para crear usuarios</small>
   <form (ngSubmit)="submitRegister()" [formGroup]="registerForm" novalidate>
-    <div *ngIf="errors && errors.length > 0 && !submited" class="alert alert-danger" role="alert">
+    <div *ngIf="errors && errors.length > 0 && !submitted" class="alert alert-danger" role="alert">
       <div>
         <strong>¡Oh Changos!</strong>
       </div>

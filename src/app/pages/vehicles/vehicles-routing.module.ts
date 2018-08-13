@@ -20,12 +20,12 @@ const routes: Routes = [{
     component: VehAddComponent,
   },
   {
-    path: ':idVehiculo',
-    component: VehEditComponent,
-  },
-  {
     path: 'ver',
     component: VehViewComponent,
+  },
+  {
+    path: ':idVehiculo',
+    component: VehEditComponent,
   }],
 }];
 
