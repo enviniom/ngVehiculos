@@ -16,7 +16,6 @@ import { finalize } from "rxjs/operators";
 export class VehAddComponent implements OnInit, OnDestroy {
   public formVehCreate: FormGroup;
   private evtAudit: Evento; // Evento para la tabla de auditoría
-  private evtImg: any;
   public errors: string[] = [];
   public submitted: boolean = false;
   private subscriptionVeh: Subscription;
@@ -42,6 +41,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
   public message: string; // Mensaje para cuando se edita el vehículo
 
   // Variables para guardar la imágen del vehículo
+  private imgPath: any; // // ruta de la imagen a subir, de no existir se usa la imagen por defecto
   private uploadPercent: Observable<number>;
   private downloadURL: Observable<string | null>;
   public percent: number = 0;
@@ -69,7 +69,8 @@ export class VehAddComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.evtImg = null;
+    this.imgPath = null;
+    // Timer para mostrar mensaje cuando el vehículo no existe
     this.message = "Espere un momento, buscando el vehículo seleccionado";
     setTimeout(() => {
       this.message = "¡Oh vaya!, no se encontró el vehículo especificado";
@@ -109,6 +110,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
     for (let i = 0; i < 50; i++) {
       this.anios[i] = String(2019 - i);
     }
+    this.vehiculo = this.prepareSaveVeh();
   }
 
   ngOnDestroy() {
@@ -157,8 +159,8 @@ export class VehAddComponent implements OnInit, OnDestroy {
     this.submitted = true;
     this.vehiculo = this.prepareSaveVeh();
     this.beautify();
-    if (this.evtImg) {
-      this.uploadFile(this.evtImg);
+    if (this.imgPath) {
+      this.uploadFile(this.imgPath);
     } else {
       this.createVehiculo();
     }
@@ -200,7 +202,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
   }
 
   prepareFile(event) {
-    this.evtImg = event;
+    this.imgPath = event;
   }
 
   uploadFile(event): void {
@@ -220,7 +222,7 @@ export class VehAddComponent implements OnInit, OnDestroy {
           this.downloadURL.subscribe(url => {
             this.vehiculo.fotoUrl = url;
             this.createVehiculo();
-            this.evtImg = null;
+            this.imgPath = null;
           }); // finaliza, no necesita unsubscribe
         })
       )

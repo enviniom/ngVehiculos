@@ -4,18 +4,18 @@ import { NbMenuItem } from '@nebular/theme';
 export const MENU_ITEMS: NbMenuItem[] = [
   {
     title: 'Dashboard',
-    icon: 'fa fa-home',
+    icon: 'la la-home',
     link: '/pages/dashboard',
     home: true,
   },
   {
     title: 'Vehículos',
-    icon: 'fa fa-truck',
+    icon: 'la la-truck',
     link: '/pages/vehiculos/ver',
   },
   {
     title: 'Horómetro',
-    icon: 'fa fa-compass'
+    icon: 'la la-compass'
   },
   {
     title: 'ADMINISTRAR',
@@ -23,21 +23,21 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
     title: 'Vehículos',
-    icon: 'fa fa-bus',
+    icon: 'la la-bus',
     link: '/pages/vehiculos/listar',
   },
   {
     title: 'Usuarios',
-    icon: 'fa fa-address-book',
+    icon: 'la la-book',
     children: [
       {
         title: 'Listar Usuarios',
-        icon: 'fa fa-users',
+        icon: 'la la-users',
         link: '',
       },
       {
         title: 'Crear Usuario',
-        icon: 'fa fa-user-plus',
+        icon: 'la la-user-plus',
         link: '/auth/register',
       }
     ]

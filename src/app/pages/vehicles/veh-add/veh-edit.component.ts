@@ -17,7 +17,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 export class VehEditComponent implements OnInit, OnDestroy {
   public formVehCreate: FormGroup;
   private evtAudit: Evento; // Evento para la tabla de auditoría
-  private evtImg: any;
   public errors: string[] = [];
   public submitted: boolean = false;
   private subscriptionVeh: Subscription;
@@ -44,6 +43,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
   private id: string; // Para solicitar los datos del vehículo a editar
 
   // Variables para guardar la imágen del vehículo
+  private imgPath: any; // ruta de la imagen a subir, de no existir se usa la imagen por defecto
   private uploadPercent: Observable<number>;
   private downloadURL: Observable<string | null>;
   public percent: number = 0;
@@ -73,7 +73,8 @@ export class VehEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.evtImg = null;
+    this.imgPath = null;
+    // Timer para mostrar mensaje cuando el vehículo no existe
     this.message = "Espere un momento, buscando el vehículo seleccionado";
     setTimeout(() => {
       this.message = "¡Oh vaya!, no se encontró el vehículo especificado";
@@ -195,8 +196,8 @@ export class VehEditComponent implements OnInit, OnDestroy {
     this.submitted = true;
     this.vehiculo = this.prepareSaveVeh();
     this.beautify();
-    if (this.evtImg) {
-      this.uploadFile(this.evtImg);
+    if (this.imgPath) {
+      this.uploadFile(this.imgPath);
     } else {
       this.updateVehiculo();
     }
@@ -238,7 +239,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
   }
 
   prepareFile(event) {
-    this.evtImg = event;
+    this.imgPath = event;
   }
 
   uploadFile(event): void {
@@ -258,7 +259,7 @@ export class VehEditComponent implements OnInit, OnDestroy {
           this.downloadURL.subscribe(url => {
             this.vehiculo.fotoUrl = url;
             this.updateVehiculo();
-            this.evtImg = null;
+            this.imgPath = null;
           }); // finaliza, no necesita unsubscribe
         })
       )

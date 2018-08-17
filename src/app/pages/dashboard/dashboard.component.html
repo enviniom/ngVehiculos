@@ -1,36 +1,15 @@
 <div class="row">
   <nb-card>
     <nb-card-header>
-      <h3>Esta tarjeta es para subir las imagenes</h3>
+      <h3>Esta tarjeta es para probar los íconos</h3>
     </nb-card-header>
     <nb-card-body>
-      <div class="custom-file">
-        <input class="custom-file-input" type="file" (change)="uploadFile($event)" />
-        <label class="custom-file-label">Selecciona una imágen</label>
-      </div>
-      <!-- <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <span class="input-group-text" id="inputGroupFileAddon01">Cargar imágen</span>
-        </div>
-        <div class="custom-file">
-          <input type="file" class="custom-file-input" id="inputGroupFile01" (change)="uploadFile($event)" aria-describedby="inputGroupFileAddon01">
-          <label class="custom-file-label" for="inputGroupFile01">Selecciona la imágen</label>
-        </div>
-      </div> -->
-      <p>
-        <ngb-progressbar [showValue]="true" type="info" [value]="percent"></ngb-progressbar>
-      </p>
-      <a [href]="downloadURL | async">{{ downloadURL | async }}</a>
+      <p>truck l1 <i class="la-truck"></i></p>
+      <p>truck l2 <i class="la la-truck"></i></p>
+      <p>truck f1 <i class="fa-truck"></i></p>
+      <p>truck f2 <i class="fa fa-truck"></i></p>
+      <h2>truck l2 <i class="la la-truck"></i></h2>
     </nb-card-body>
   </nb-card>
 </div>
-<div class="row">
-  <nb-card>
-    <nb-card-header>
-      <h4>Esta tarjeta es para mosrar las imágenes subidas</h4>
-    </nb-card-header>
-    <nb-card-body>
-      <img [src]="downloadURL | async" />
-    </nb-card-body>
-  </nb-card>
-</div>
+
